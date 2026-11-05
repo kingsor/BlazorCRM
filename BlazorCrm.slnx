@@ -1,0 +1,42 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/Solution Items/">
+    <File Path="CLAUDE.md" />
+    <File Path="README.md" />
+    <File Path="update-projects.md" />
+  </Folder>
+  <Folder Name="/src/" />
+  <Folder Name="/src/Application/">
+    <Project Path="src/Crm.Application/Crm.Application.csproj" />
+  </Folder>
+  <Folder Name="/src/Background/">
+    <Project Path="src/Background/Crm.Worker/Crm.Worker.csproj" />
+  </Folder>
+  <Folder Name="/src/Contracts/">
+    <Project Path="src/Contracts/Crm.Contracts/Crm.Contracts.csproj" />
+  </Folder>
+  <Folder Name="/src/Domain/">
+    <Project Path="src/Crm.Domain/Crm.Domain.csproj" />
+  </Folder>
+  <Folder Name="/src/Infrastructure/">
+    <Project Path="src/Crm.Infrastructure/Crm.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/src/Presentation/">
+    <Project Path="src/Presentation/Crm.UI/Crm.UI.csproj" />
+    <Project Path="src/Presentation/Crm.Web/Crm.Web.csproj" />
+  </Folder>
+  <Folder Name="/tests/" />
+  <Folder Name="/tests/Application/">
+    <Project Path="tests/Crm.Application.Tests/Crm.Application.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Domain/">
+    <Project Path="tests/Crm.Domain.Tests/Crm.Domain.Tests.csproj" />
+  </Folder>
+  <Folder Name="/tests/Web/">
+    <Project Path="tests/Crm.Web.Tests/Crm.Web.Tests.csproj" />
+  </Folder>
+</Solution>
