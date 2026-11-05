@@ -145,8 +145,10 @@ else
     {
         q.UsePersistentStore(s =>
         {
-            s.UseProperties = true;
-            s.PerformSchemaValidation = false; // remove after Quartz tables are created
+            s.ConfigureStore(o =>
+            {
+                o.StoreJobDataAsStrings = true;
+            });
             s.UsePostgres(o =>
             {
                 o.ConnectionString = configuredConnStr;
@@ -158,7 +160,7 @@ else
         q.AddTrigger(t => t.ForJob(jobKey)
             .WithIdentity("RemindersSweep-trigger")
             .StartNow()
-            .WithSimpleSchedule(x => x.WithIntervalInMinutes(5).RepeatForever()));
+            .WithSimpleSchedule(x => x.WithInterval(TimeSpan.FromMinutes(5)).RepeatForever()));
     });
     builder.Services.AddQuartzHostedService(opt => { opt.WaitForJobsToComplete = true; });
 }

@@ -23,7 +23,7 @@ namespace Crm.Infrastructure.Jobs
             _sp = sp;
         }
 
-        public async Task Execute(IJobExecutionContext context)
+        public async ValueTask Execute(IJobExecutionContext context, CancellationToken cancellationToken)
         {
             using var scope = _sp.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<CrmDbContext>();
@@ -36,7 +36,7 @@ namespace Crm.Infrastructure.Jobs
 
             var tenants = await db.Tenants.AsNoTracking()
                 .Select(t => new { t.Id, t.Slug, t.Name })
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             try
             {
@@ -48,13 +48,13 @@ namespace Crm.Infrastructure.Jobs
                                             .Where(a => a.DueAt != null && a.Status != ActivityStatus.Completed && a.DueAt <= soon)
                                             .OrderBy(a => a.DueAt)
                                             .Take(50)
-                                            .ToListAsync();
+                                            .ToListAsync(cancellationToken);
 
                     foreach (var a in dueActivities)
                     {
                         var msg = $"Activity {a.Type} due at {a.DueAt:yyyy-MM-dd HH:mm} (Status: {a.Status})";
                         await notifier.AddAsync(msg, a.DueAt < now ? "Error" : "Warning");
-                        await hub.Clients.All.SendAsync("notify", new { title = "Activity", body = msg, severity = a.DueAt < now ? "Error" : "Warning" });
+                        await hub.Clients.All.SendAsync("notify", new { title = "Activity", body = msg, severity = a.DueAt < now ? "Error" : "Warning" }, cancellationToken);
                         _logger.LogInformation(msg);
                     }
 
@@ -62,13 +62,13 @@ namespace Crm.Infrastructure.Jobs
                                        .Where(t => t.DueAt != null && t.Status != TaskStatus.Done && t.DueAt <= soon)
                                        .OrderBy(t => t.DueAt)
                                        .Take(50)
-                                       .ToListAsync();
+                                       .ToListAsync(cancellationToken);
 
                     foreach (var t in dueTasks)
                     {
                         var msg = $"Task '{t.Title}' due {t.DueAt:yyyy-MM-dd HH:mm} (Priority: {t.Priority})";
                         await notifier.AddAsync(msg, t.DueAt < now ? "Error" : "Warning");
-                        await hub.Clients.All.SendAsync("notify", new { title = "Task", body = msg, severity = t.DueAt < now ? "Error" : "Warning" });
+                        await hub.Clients.All.SendAsync("notify", new { title = "Task", body = msg, severity = t.DueAt < now ? "Error" : "Warning" }, cancellationToken);
                         _logger.LogInformation(msg);
                     }
                 }
